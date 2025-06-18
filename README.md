@@ -1,19 +1,19 @@
 # Arduino Multi-Alarm Clock
 
-A customizable, low-power digital alarm clock built with Arduino. Supports multiple alarms with weekday scheduling, a minimalist two-button interface, and a 3D-printed enclosure. Designed for reliability, power efficiency, and a clean user experience.
+A customizable, low-power digital alarm clock built using an **Arduino Nano**. Supports multiple alarms with per-day scheduling, a minimalist two-button interface, and a compact 3D-printed enclosure. Designed for reliability, power efficiency, and an intuitive user experience.
 
 ---
 
 ## Features
 
-- Set up to **8 independent alarms** with day-of-week schedules
-- **16x4 LCD** with large, custom-rendered block digits
-- **EEPROM** storage for alarm persistence across power cycles
-- **Two-button UI** with support for short/long presses and menu navigation
-- **Light sensor** for automatic screen dimming in dark environments
-- **Sleep mode** with minute-level wake-up via RTC interrupt
-- **AC-powered** with voltage sensing for brownout detection
-- **Custom 3D-printed case** and clean protoboard layout
+- Set up to **8 independent alarms** with weekday scheduling
+- **16x4 I2C LCD** with large, block-style custom digits
+- **EEPROM**-backed persistent alarm storage
+- **Two-button interface** with context-aware short/long presses
+- **Ambient light detection** to auto-dim or disable display
+- **Deep sleep mode** with RTC interrupt wake every minute
+- **AC-powered** with voltage sensing for brownout warnings
+- **Compact 3D-printed case** for clean and durable packaging
 
 ---
 
@@ -21,68 +21,71 @@ A customizable, low-power digital alarm clock built with Arduino. Supports multi
 
 | Component              | Description                                |
 |------------------------|--------------------------------------------|
-| Arduino Uno            | Microcontroller                            |
-| 16x4 LCD (I2C)         | Display with custom characters              |
-| DS3231 RTC             | Real-time clock with alarm interrupt       |
-| Photoresistor          | Light sensor for ambient brightness        |
-| Piezo buzzer           | Alarm sound output                         |
-| Push buttons (x2)      | Input interface                            |
-| EEPROM (internal)      | Persistent alarm storage                   |
-| Power adapter          | AC power supply                            |
-| Voltage divider        | Supply voltage monitoring                  |
-| 3D-printed enclosure   | Custom-designed and printed case           |
+| Arduino Nano           | Microcontroller (ATmega328P)               |
+| 16x4 LCD (I2C)         | Display with custom character support       |
+| DS3231 RTC             | Real-time clock with 1-minute interrupt    |
+| Photoresistor          | Ambient light sensing                      |
+| Piezo buzzer           | Audible alarm output                       |
+| Push buttons (x2)      | User input interface                       |
+| EEPROM (internal)      | Non-volatile alarm data                    |
+| AC adapter (5V)        | Power supply                               |
+| Voltage divider        | Power voltage monitoring                   |
+| 3D-printed enclosure   | Custom case for electronics                |
 
 ---
 
-## Software Details
+## Software Overview
 
-- Written in **C++ for Arduino**
-- Uses `Wire.h` for I2C communication with RTC and LCD
-- Alarm logic uses a **weekday bitmask** and time comparison
-- UI implemented via a **finite state machine (FSM)**
-- Custom characters defined for large-format digit display
-- Power management with **sleep mode** using `LowPower.h`
-- Alarms and config saved to **EEPROM** with write buffering
+- Developed in **Arduino C++** using the Arduino IDE
+- LCD and RTC communicate via I2C using `Wire.h`
+- Alarm system uses a **weekday bitmask** for flexible scheduling
+- Finite State Machine (FSM) handles display and user interaction
+- Custom glyphs used to render large-format digits across LCD
+- `LowPower.h` enables deep sleep to conserve energy
+- EEPROM operations buffered to reduce write wear
 
 ---
 
-## Setup and Usage
+## Setup & Usage
 
-1. **Upload the Sketch**
+### 1. Upload Firmware
 
-   - Open `AlarmClock.ino` in the Arduino IDE
-   - Connect your Arduino via USB
-   - Select the correct board and port, then upload
+- Open `AlarmClock.ino` in Arduino IDE
+- Select **Arduino Nano** as board (ATmega328P)
+- Choose correct **COM port**
+- Upload sketch to device
 
-2. **Wiring Guide**
+### 2. Wiring Guide
 
-   - Connect the RTC (DS3231) to SDA/SCL (A4/A5 on Uno)
-   - Connect the LCD via I2C (same bus as RTC)
-   - Wire photoresistor with a voltage divider to an analog pin
-   - Connect push buttons to digital pins with pull-down or pull-up resistors
-   - Optional: add buzzer to digital output pin for alarm sound
-   - Optional: wire voltage divider to analog pin for power sensing
+| Signal       | Connection         |
+|--------------|--------------------|
+| SDA/SCL      | A4 / A5 (I2C bus)  |
+| Light sensor | A0 (via voltage divider) |
+| Buttons      | D2, D3 (with pull-up/down) |
+| Buzzer       | D9 (or any PWM pin) |
+| Voltage sense| A1 (via resistor divider) |
 
-3. **Controls**
+### 3. Interface Controls
 
-   - **Short press (Button A):** Cycle through modes
-   - **Long press (Button A):** Enter/confirm current selection
-   - **Short press (Button B):** Increment values or toggle options
-   - **Long press (Button B):** Cancel or return to previous menu
+- **Short Press (Button A):** Navigate menu or toggle fields
+- **Long Press (Button A):** Confirm or enter sub-modes
+- **Short Press (Button B):** Increment or select values
+- **Long Press (Button B):** Cancel/exit or return
 
-4. **Modes**
+### 4. Available Modes
 
-   - View current time and upcoming alarms
-   - Set current time
-   - Add/edit alarms (hour, minute, active days)
-   - Enable/disable alarms
-   - View battery/power status
+- Time display (default)
+- Set time
+- Add/edit alarm: set time and weekdays
+- Enable/disable alarms
+- View voltage / brightness status
 
-5. **Alarm Behavior**
+### 5. Alarm Logic
 
-   - Clock checks alarm schedule every minute on wake
-   - If current time and weekday match an active alarm, buzzer sounds
-   - Alarm can be dismissed with any button press
+- Wakes every minute via RTC interrupt
+- If current time and day match a set alarm, buzzer triggers
+- Alarms can be dismissed by any button press
+- Icons indicate upcoming alarm status (solid = soon, hollow = later)
 
 ---
 
@@ -94,6 +97,4 @@ A customizable, low-power digital alarm clock built with Arduino. Supports multi
 
 ## License
 
-This project is licensed under the MIT License. See `LICENSE` for details.
-
----
+MIT License. See `LICENSE` for details.
