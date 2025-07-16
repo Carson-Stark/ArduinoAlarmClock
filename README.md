@@ -1,21 +1,29 @@
 # Arduino Multi-Alarm Clock
 
+![IMG_8194](https://github.com/user-attachments/assets/7d3094f3-1309-490f-8ce8-bd3b6484da71)
+
+## Project Overview
+
 A customizable, low-power digital alarm clock built using an **Arduino Nano**. Supports multiple alarms with per-day scheduling, a minimalist two-button interface, and a compact 3D-printed enclosure. Designed for reliability, power efficiency, and an intuitive user experience.
 
----
-
-## Features
+### Features
 
 - Set up to **8 independent alarms** with weekday scheduling
 - **16x4 I2C LCD** with large, block-style custom digits
-- **EEPROM**-backed persistent alarm storage
 - **Two-button interface** with context-aware short/long presses
 - **Ambient light detection** to auto-dim or disable display
 - **Deep sleep mode** with RTC interrupt wake every minute
 - **AC-powered** with voltage sensing for brownout warnings
 - **Compact 3D-printed case** for clean and durable packaging
 
----
+### Project Timeline
+
+- **Date Started:** September 2018
+- **Date Completed:** October 2018
+
+## Demo
+
+https://github.com/user-attachments/assets/caf4f362-8fb0-4f28-ab67-8239f7dfc2e4
 
 ## Hardware
 
@@ -32,7 +40,22 @@ A customizable, low-power digital alarm clock built using an **Arduino Nano**. S
 | Voltage divider        | Power voltage monitoring                   |
 | 3D-printed enclosure   | Custom case for electronics                |
 
----
+### Circuit Diagram
+
+![CircuitDiagram](https://github.com/user-attachments/assets/23b6b788-bdd8-402b-9778-e067e7c106b0)
+
+Public Circuit Designer link: [Alarm Clock Circuit](https://app.cirkitdesigner.com/project/4ae56a12-4e2b-4acc-8b0b-463c14d5e23f)
+
+### Arduino Pins
+
+| Function                     | Pin | Setting (pinMode) |
+|------------------------------|-----|-------------------|
+| RTC minute‑tick interrupt    | 2   | `INPUT_PULLUP`    |
+| External wake interrupt      | 3   | `INPUT_PULLUP`    |
+| Buzzer output                | 5   | `OUTPUT`          |
+| UI Button A                  | 11  | `INPUT_PULLUP`    |
+| UI Button B                  | 10  | `INPUT_PULLUP`    |
+| Photo‑resistor ADC           | A0  | Analog input      |
 
 ## Software Overview
 
@@ -42,58 +65,47 @@ A customizable, low-power digital alarm clock built using an **Arduino Nano**. S
 - Finite State Machine (FSM) handles display and user interaction
 - Custom glyphs used to render large-format digits across LCD
 - `LowPower.h` enables deep sleep to conserve energy
-- EEPROM operations buffered to reduce write wear
-
----
 
 ## Setup & Usage
 
-### 1. Upload Firmware
+### 1 · Upload Firmware
 
-- Open `AlarmClock.ino` in Arduino IDE
-- Select **Arduino Nano** as board (ATmega328P)
-- Choose correct **COM port**
-- Upload sketch to device
+1. Open **`AlarmClock.ino`** in the Arduino IDE.  
+2. Select **Arduino Nano (ATmega328P, 5 V)** under *Tools → Board*.  
+3. Choose the correct **COM port**.  
+4. Click **Upload**.
 
-### 2. Wiring Guide
+### 2 · Setup Wiring
 
-| Signal       | Connection         |
-|--------------|--------------------|
-| SDA/SCL      | A4 / A5 (I2C bus)  |
-| Light sensor | A0 (via voltage divider) |
-| Buttons      | D2, D3 (with pull-up/down) |
-| Buzzer       | D9 (or any PWM pin) |
-| Voltage sense| A1 (via resistor divider) |
+- Ensure you have connected the required components to the Arduino correctly
+- Folow the guide above
+- Supply the Circuit with 4.5V DC, recommended to get AC -> DC stepdown converter with barrel plug
 
-### 3. Interface Controls
+### 3 · Interface Controls
 
-- **Short Press (Button A):** Navigate menu or toggle fields
-- **Long Press (Button A):** Confirm or enter sub-modes
-- **Short Press (Button B):** Increment or select values
-- **Long Press (Button B):** Cancel/exit or return
+| Gesture                        | Result                                |
+|--------------------------------|---------------------------------------|
+| **Short press A**              | Navigate / toggle field               |
+| **Long press A**               | Confirm / enter sub‑mode              |
+| **Short press B**              | Increment / select value              |
+| **Long press B**               | Cancel / back / exit                  |
+| **During alarm – tap**         | Snooze 5 min                          |
+| **During alarm – hold B ≈2 s** | Stop alarm until next schedule        |
+| **Hold B 3s**                  | Disable/Enable alarm function         |
 
-### 4. Available Modes
+### 4 · Clock Modes
 
-- Time display (default)
-- Set time
-- Add/edit alarm: set time and weekdays
-- Enable/disable alarms
-- View voltage / brightness status
+- **Idle:** Large time display + next‑alarm icon
+- **Set Time:** Adjust hour/minute
+- **Edit Alarm:** Choose index, set time, select weekdays
 
-### 5. Alarm Logic
+### 5 · Alarm Flow
 
-- Wakes every minute via RTC interrupt
-- If current time and day match a set alarm, buzzer triggers
-- Alarms can be dismissed by any button press
-- Icons indicate upcoming alarm status (solid = soon, hollow = later)
-
----
-
-## Demo
-
-![Alarm Clock Demo](demo.gif)
-
----
+1. DS3231 INT triggers every minute → MCU wakes.  
+2. Current weekday + time compared to enabled alarm list.  
+3. **Match:** Buzzer sounds continuously.  
+4. User tap ➜ snooze 5 min; user hold B ➜ stop.  
+5. MCU returns to deep sleep until next INT.
 
 ## License
 
