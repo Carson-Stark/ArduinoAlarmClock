@@ -1,6 +1,6 @@
 # Arduino Multi-Alarm Clock
 
-![IMG_8194](https://github.com/user-attachments/assets/7d3094f3-1309-490f-8ce8-bd3b6484da71)
+<img width="1920" height="1080" alt="hero" src="https://github.com/user-attachments/assets/80f35310-b724-4082-b8e0-6428ea75cd26" />
 
 ## Project Overview
 
